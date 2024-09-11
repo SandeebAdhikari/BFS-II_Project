@@ -40,7 +40,7 @@ class ToDoListGUI {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
 
-        JTextField taskInputField = new JTextField(20);
+        JTextField taskInputField = new JTextField(30);
         JButton addButton = new JButton("Add Task");
         JButton deleteButton = new JButton("Delete Selected Tasks");
 
@@ -53,10 +53,9 @@ class ToDoListGUI {
         inputPanel.add(addButton);
         inputPanel.add(deleteButton);
 
-        inputPanel.add(new JLabel("Search:"));
+
         inputPanel.add(searchInputField);
         inputPanel.add(searchButton);
-
         inputPanel.add(completeTaskButton);
 
         mainPanel.add(inputPanel, BorderLayout.SOUTH);
