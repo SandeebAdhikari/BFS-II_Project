@@ -11,7 +11,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
     public NotePad(){
         Font fnt = new Font("Arial", Font.PLAIN, 15);
         Container con = getContentPane();
-        JMenuBar jmb = new JMenuBar();  // Changed from jab to jmb
+        JMenuBar jmb = new JMenuBar();
         JMenu jmfile = new JMenu("File");
         JMenu jmedit = new JMenu ("Edit");
         JMenu jmhelp = new JMenu("Help");
@@ -70,7 +70,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
                     File fyl = jfc.getSelectedFile();
                     OpenFile(fyl.getAbsolutePath());
                     this.setTitle(fyl.getName() + " - NotePad");
-                    fnameContainer = fyl;  // Corrected from fyi to fyl
+                    fnameContainer = fyl;
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -83,13 +83,13 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
                 jfc.setSelectedFile(new File("Untitled.txt"));
             }
 
-            int ret = jfc.showDialog(null, "Save");  // Added "Save" argument
+            int ret = jfc.showDialog(null, "Save");
             if (ret == JFileChooser.APPROVE_OPTION) {
                 try {
-                    File fyl = jfc.getSelectedFile();  // Corrected from getSelectFile to getSelectedFile
+                    File fyl = jfc.getSelectedFile();
                     SaveFile(fyl.getAbsolutePath());
                     this.setTitle(fyl.getName() + "- NotePad");
-                    fnameContainer = fyl;  // Corrected from fyi to fyl
+                    fnameContainer = fyl;
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -98,12 +98,12 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
             Exiting();
         } else if (e.getActionCommand().equals("Copy")) {
             jta.copy();
-        } else if (e.getActionCommand().equals("Cut")) {  // Corrected from "cut" to "Cut"
+        } else if (e.getActionCommand().equals("Cut")) {
             jta.cut();
         } else if (e.getActionCommand().equals("Paste")) {
             jta.paste();
         } else if (e.getActionCommand().equals("About Notepad")) {
-            JOptionPane.showMessageDialog(this, "Created By : Shiv & Sandeep", "NotePad", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Created By : Shiv & Sandeeb", "NotePad", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
