@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-class ToDoListGUI {
+public class ToDoListGUI {
     public ToDoListApp app;
     public JFrame frame;
     public JPanel taskPanel;
