@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/BFS56_II.iml" filepath="$PROJECT_DIR$/BFS56_II.iml" />
-=======
-      <module fileurl="file://$PROJECT_DIR$/.idea/BFS56NotePad.iml" filepath="$PROJECT_DIR$/.idea/BFS56NotePad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Notepad/Notepad.iml" filepath="$PROJECT_DIR$/Notepad/Notepad.iml" />
->>>>>>> origin/shivNotepad
     </modules>
   </component>
 </project>

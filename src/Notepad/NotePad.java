@@ -1,8 +1,9 @@
+package Notepad;
+
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class NotePad extends JFrame implements ActionListener, WindowListener {
     JTextArea jta = new JTextArea();
@@ -60,7 +61,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
     public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
         if (e.getActionCommand().equals("New")) {
-            this.setTitle("Untitled.txt-NotePad");
+            this.setTitle("Untitled.txt-Notepad.NotePad");
             jta.setText("");
             fnameContainer = null;
         } else if (e.getActionCommand().equals("Open")) {
@@ -69,7 +70,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
                 try {
                     File fyl = jfc.getSelectedFile();
                     OpenFile(fyl.getAbsolutePath());
-                    this.setTitle(fyl.getName() + " - NotePad");
+                    this.setTitle(fyl.getName() + " - Notepad.NotePad");
                     fnameContainer = fyl;
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -88,7 +89,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
                 try {
                     File fyl = jfc.getSelectedFile();
                     SaveFile(fyl.getAbsolutePath());
-                    this.setTitle(fyl.getName() + "- NotePad");
+                    this.setTitle(fyl.getName() + "- Notepad.NotePad");
                     fnameContainer = fyl;
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -103,7 +104,7 @@ public class NotePad extends JFrame implements ActionListener, WindowListener {
         } else if (e.getActionCommand().equals("Paste")) {
             jta.paste();
         } else if (e.getActionCommand().equals("About Notepad")) {
-            JOptionPane.showMessageDialog(this, "Created By : Shiv & Sandeeb", "NotePad", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Created By : Shiv & Sandeeb", "Notepad.NotePad", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
