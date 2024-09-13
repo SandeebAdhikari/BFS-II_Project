@@ -76,6 +76,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "Student ID: " + id +"\n First Name: "+firstName+"\n Last Name: "+"\n Address: "+address+"\n Phone Number: "+phoneNumber+"\n";
+        return "<html>Student ID: " + id + "<br>First Name: " + firstName +
+                "<br>Last Name: " + lastName + "<br>Address: " + address +
+                "<br>Phone Number: " + phoneNumber + "</html>";
     }
 }
