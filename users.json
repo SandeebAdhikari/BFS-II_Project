@@ -1,1 +1,1 @@
-[{"firstName":"sandeeb","lastName":"adhikari","address":"8 cherry st","phoneNumber":"9732168107","id":1},{"firstName":"aanchal","lastName":"dhakal","address":"8 cherry st ","phoneNumber":"9732168107","id":2}]
+[{"firstName":"sand","lastName":"adh","address":"123 ave","phoneNumber":"1234567890","role":"Student","id":1},{"firstName":"man","lastName":"deep","address":"125 ave","phoneNumber":"0987654321","role":"Teacher","id":2}]

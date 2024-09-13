@@ -22,6 +22,11 @@ public class UserGUI {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Dropdown for selecting user role
+        JLabel roleLabel = new JLabel("Role:");
+        String[] roles = {"Student", "Teacher"};
+        JComboBox<String> roleComboBox = new JComboBox<>(roles);
+
         JLabel firstNameLabel = new JLabel("First Name:");
         JTextField firstNameInputField = new JTextField(15);
         JLabel lastNameLabel = new JLabel("Last Name:");
@@ -36,24 +41,30 @@ public class UserGUI {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        inputPanel.add(roleLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(roleComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         inputPanel.add(firstNameLabel, gbc);
         gbc.gridx = 1;
         inputPanel.add(firstNameInputField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         inputPanel.add(lastNameLabel, gbc);
         gbc.gridx = 1;
         inputPanel.add(lastNameInputField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         inputPanel.add(addressLabel, gbc);
         gbc.gridx = 1;
         inputPanel.add(addressInputField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         inputPanel.add(phoneNumberLabel, gbc);
         gbc.gridx = 1;
         inputPanel.add(phoneNumberInputField, gbc);
@@ -76,9 +87,10 @@ public class UserGUI {
             String lastName = lastNameInputField.getText();
             String address = addressInputField.getText();
             String phoneNumber = phoneNumberInputField.getText();
+            String role = roleComboBox.getSelectedItem().toString();
 
             if (!(firstName.isEmpty() || lastName.isEmpty() || address.isEmpty() || phoneNumber.isEmpty())) {
-                app.addUser(firstName, lastName, address, phoneNumber);
+                app.addUser(firstName, lastName, address, phoneNumber, role);
                 firstNameInputField.setText("");
                 lastNameInputField.setText("");
                 addressInputField.setText("");
@@ -106,81 +118,77 @@ public class UserGUI {
         searchPanel.add(new JLabel("Search:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
+
         dialogPanel.add(searchPanel, BorderLayout.NORTH);
 
-        // User list display area with checkboxes
+        // Panel to list the users
         JPanel userListPanel = new JPanel();
         userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(userListPanel);
         dialogPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Delete button in the popup
-        JButton deleteButton = new JButton("Delete Selected Users");
-        dialogPanel.add(deleteButton, BorderLayout.SOUTH);
+        // Refresh the user list
+        refreshUserList(userListPanel, "");
 
-        // Update user list on the pop-up when it is shown
-        updateUserListInPopup(userListPanel, "");
-
-        // Search functionality in the pop-up
+        // Search button functionality
         searchButton.addActionListener(e -> {
             String searchTerm = searchField.getText();
-            updateUserListInPopup(userListPanel, searchTerm);
+            refreshUserList(userListPanel, searchTerm);
         });
 
-        // Delete selected users from the pop-up
+        // Delete selected users button at the bottom of the popup
+        JButton deleteButton = new JButton("Delete Selected Users");
         deleteButton.addActionListener(e -> {
             deleteSelectedUsersFromPopup(userListPanel);
-            app.saveUsersToFile();  // Save updated list after deletion
-            updateUserListInPopup(userListPanel, "");  // Refresh the list after deletion
+            refreshUserList(userListPanel, searchField.getText()); // Refresh after deletion
         });
+
+        dialogPanel.add(deleteButton, BorderLayout.SOUTH);
 
         userListDialog.add(dialogPanel);
         userListDialog.setVisible(true);
     }
 
-    // Method to update the user list in the pop-up window
-    public void updateUserListInPopup(JPanel userListPanel, String searchTerm) {
-        userListPanel.removeAll();  // Clear previous list
-
+    // Method to refresh the user list in the pop-up based on search term
+    public void refreshUserList(JPanel userListPanel, String searchTerm) {
+        userListPanel.removeAll();
         for (User user : app.users) {
-            JCheckBox userCheckbox = new JCheckBox(user.toString());
-            userCheckbox.setName(String.valueOf(user.getId()));
-
             if (user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase()) ||
                     user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())) {
-                userListPanel.add(userCheckbox);  // Add user checkbox to list
+                JCheckBox userCheckbox = new JCheckBox(user.toString());
+                userCheckbox.setName(String.valueOf(user.getId()));
+                userListPanel.add(userCheckbox);
             }
         }
-
         userListPanel.revalidate();
         userListPanel.repaint();
     }
 
     // Method to delete selected users from the pop-up window
-    // Method to delete selected users from the pop-up window
     public void deleteSelectedUsersFromPopup(JPanel userListPanel) {
         Component[] components = userListPanel.getComponents();
         ArrayList<Integer> usersToDelete = new ArrayList<>();
 
-        // Loop through all components in the userListPanel
+        // Identify selected users for deletion
         for (Component component : components) {
-            // Check if the component is a checkbox (user checkbox)
             if (component instanceof JCheckBox) {
                 JCheckBox checkbox = (JCheckBox) component;
-                // If checkbox is selected, add the user ID (stored in the name) to the list of users to delete
                 if (checkbox.isSelected()) {
                     usersToDelete.add(Integer.parseInt(checkbox.getName()));
                 }
             }
         }
 
-        // Iterate through the list of users and remove those whose ID matches the selected ones
+        // Remove selected users from the app's user list
         Iterator<User> iterator = app.users.iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();
             if (usersToDelete.contains(user.getId())) {
-                iterator.remove(); // Remove the user from the list
+                iterator.remove();
             }
         }
+
+        // Save updated list to the file after deletion
+        app.saveUsersToFile();
     }
 }

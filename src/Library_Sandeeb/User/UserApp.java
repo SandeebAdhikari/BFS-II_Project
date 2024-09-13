@@ -20,8 +20,8 @@ public class UserApp {
         loadUsersFromFile();
     }
 
-    public void addUser(String firstName, String lastName, String address, String phoneNumber) {
-        User newUser = new User(userIdCounter++, firstName, lastName, address, phoneNumber);
+    public void addUser(String firstName, String lastName, String address, String phoneNumber, String role) {
+        User newUser = new User(userIdCounter++, firstName, lastName, address, phoneNumber, role);
         users.add(newUser);
         saveUsersToFile();
     }
@@ -37,8 +37,9 @@ public class UserApp {
                 String lastName = (String) userObj.get("lastName");
                 String address = (String) userObj.get("address");
                 String phoneNumber = (String) userObj.get("phoneNumber");
+                String role = (String) userObj.get("role");
 
-                User user = new User(id, firstName, lastName, address, phoneNumber);
+                User user = new User(id, firstName, lastName, address, phoneNumber, role);
                 users.add(user);
                 userIdCounter = Math.max(userIdCounter, id + 1);  // Ensure unique user IDs
             }
@@ -62,6 +63,7 @@ public class UserApp {
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) {
         UserApp app = new UserApp();
