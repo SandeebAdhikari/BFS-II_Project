@@ -25,14 +25,7 @@ public class UserApp {
         User newStudent = new User(studentIDCounter++, firstName, lastName, address, phoneNumber);
         users.add(newStudent);
     }
-    public User findStudentById(int id){
-        for(User user : users){
-            if(user.getId()==id){
-                return user;
-            }
-        }
-        return null;
-    }
+
 
     public void loadStudentInfoFromFile(){
         JSONParser parser = new JSONParser();
