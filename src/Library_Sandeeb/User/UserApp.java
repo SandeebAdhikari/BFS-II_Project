@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 public class UserApp {
     public ArrayList<User> users;
     public int studentIDCounter;
-    public static final String FILE_PATH = "tasks.json";
+    public static final String FILE_PATH = "user.json";
 
     public UserApp(){
         users = new ArrayList<>();

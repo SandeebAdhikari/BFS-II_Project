@@ -4,10 +4,20 @@ import org.json.simple.JSONObject;
 
 public class Book {
     public int isbn;
+    public int id;
     public String bookName;
     public String authorName;
     public String edition;
     public int publishedDate;
+
+    public Book(int isbn,int id, String bookName, String authorName, String edition, int publishedDate) {
+        this.isbn = isbn;
+        this.id = id;
+        this.bookName = bookName;
+        this.authorName = authorName;
+        this.edition = edition;
+        this.publishedDate = publishedDate;
+    }
 
     public int getISBN(){
         return isbn;
@@ -20,6 +30,20 @@ public class Book {
             System.out.println("ISBN Error!!");
         }
     }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        if(id >0){
+            this.id = id;
+        }else{
+            System.out.println("id Error!!");
+        }
+
+    }
+
 
     public String getBookName(){
         return bookName;
@@ -34,7 +58,7 @@ public class Book {
     }
 
     public void setAuthorName(String authorName){
-        this.authorName =authorName;
+        this.authorName = authorName;
     }
 
     public String getEdition(){
