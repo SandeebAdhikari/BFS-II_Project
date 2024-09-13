@@ -8,11 +8,11 @@ import java.util.Iterator;
 public class UserGUI {
     public UserApp app;
     public JFrame frame;
-    public JPanel studentPanel;
+    public JPanel userPanel;
 
     public UserGUI(UserApp app) {
         this.app = app;
-        frame = new JFrame("Student List");
+        frame = new JFrame("User List");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);  // Adjust the window size
 
@@ -31,13 +31,8 @@ public class UserGUI {
         JLabel phoneNumberLabel = new JLabel("Phone Number:");
         JTextField phoneNumberInputField = new JTextField(15);
 
-
-        JLabel searchLabel = new JLabel("Search:");
-        JTextField searchStudentInputField = new JTextField(15);
-        JButton searchButton = new JButton("Search");
-
-        JButton addButton = new JButton("Add Student");
-        JButton deleteButton = new JButton("Delete Student");
+        JButton addButton = new JButton("Add User");
+        JButton viewUsersButton = new JButton("View Users");
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -64,100 +59,127 @@ public class UserGUI {
         inputPanel.add(phoneNumberInputField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
-        inputPanel.add(searchLabel, gbc);
-        gbc.gridx = 1;
-        inputPanel.add(searchStudentInputField, gbc);
-        gbc.gridx = 2;
-        inputPanel.add(searchButton, gbc);
-
-        gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
-        buttonPanel.add(deleteButton);
+        buttonPanel.add(viewUsersButton);
         inputPanel.add(buttonPanel, gbc);
 
-        studentPanel = new JPanel();
-        studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(studentPanel);
-        scrollPane.setPreferredSize(new Dimension(200, 200));
+        frame.add(inputPanel, BorderLayout.NORTH);
+        frame.setVisible(true);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        frame.add(mainPanel);
-
+        // Add user to file and clear inputs
         addButton.addActionListener(e -> {
-            String studentFirstName = firstNameInputField.getText();
-            String studentLastName = lastNameInputField.getText();
-            String studentAddress = addressInputField.getText();
-            String studentPhoneNumber = phoneNumberInputField.getText();
+            String firstName = firstNameInputField.getText();
+            String lastName = lastNameInputField.getText();
+            String address = addressInputField.getText();
+            String phoneNumber = phoneNumberInputField.getText();
 
-            if (!(studentFirstName.isEmpty() || studentLastName.isEmpty() || studentAddress.isEmpty() || studentPhoneNumber.isEmpty())) {
-                app.addStudent(studentFirstName, studentLastName, studentAddress, studentPhoneNumber);
+            if (!(firstName.isEmpty() || lastName.isEmpty() || address.isEmpty() || phoneNumber.isEmpty())) {
+                app.addUser(firstName, lastName, address, phoneNumber);
                 firstNameInputField.setText("");
                 lastNameInputField.setText("");
                 addressInputField.setText("");
                 phoneNumberInputField.setText("");
-                updateStudentArea("");
             }
         });
 
-        searchButton.addActionListener(e -> {
-            String keyword = searchStudentInputField.getText();
-            if (!keyword.isEmpty()) {
-                updateStudentArea(keyword);
-            } else {
-                updateStudentArea("");
-            }
+        // Button to show user list in a pop-up with search and delete functionality
+        viewUsersButton.addActionListener(e -> {
+            showUserListPopup();
         });
-
-        deleteButton.addActionListener(e -> {
-            deleteSelectedStudents();
-            updateStudentArea("");
-        });
-
-        frame.setVisible(true);
-        updateStudentArea("");
     }
 
-    public void updateStudentArea(String searchTerm) {
-        studentPanel.removeAll();
+    // Method to create and show the pop-up window for listing, searching, and deleting users
+    public void showUserListPopup() {
+        JDialog userListDialog = new JDialog(frame, "User List", true);
+        userListDialog.setSize(500, 400);
 
-        for (User student : app.users) {
-            JCheckBox studentCheckbox = new JCheckBox(student.toString());
-            studentCheckbox.setName(String.valueOf(student.getId()));
+        JPanel dialogPanel = new JPanel(new BorderLayout());
 
-            if (student.getFirstName().toLowerCase().contains(searchTerm.toLowerCase()) ||
-                    student.getLastName().toLowerCase().contains(searchTerm.toLowerCase())) {
-                studentPanel.add(studentCheckbox);
+        // Search bar and search button
+        JPanel searchPanel = new JPanel(new FlowLayout());
+        JTextField searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        dialogPanel.add(searchPanel, BorderLayout.NORTH);
+
+        // User list display area with checkboxes
+        JPanel userListPanel = new JPanel();
+        userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(userListPanel);
+        dialogPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Delete button in the popup
+        JButton deleteButton = new JButton("Delete Selected Users");
+        dialogPanel.add(deleteButton, BorderLayout.SOUTH);
+
+        // Update user list on the pop-up when it is shown
+        updateUserListInPopup(userListPanel, "");
+
+        // Search functionality in the pop-up
+        searchButton.addActionListener(e -> {
+            String searchTerm = searchField.getText();
+            updateUserListInPopup(userListPanel, searchTerm);
+        });
+
+        // Delete selected users from the pop-up
+        deleteButton.addActionListener(e -> {
+            deleteSelectedUsersFromPopup(userListPanel);
+            app.saveUsersToFile();  // Save updated list after deletion
+            updateUserListInPopup(userListPanel, "");  // Refresh the list after deletion
+        });
+
+        userListDialog.add(dialogPanel);
+        userListDialog.setVisible(true);
+    }
+
+    // Method to update the user list in the pop-up window
+    public void updateUserListInPopup(JPanel userListPanel, String searchTerm) {
+        userListPanel.removeAll();  // Clear previous list
+
+        for (User user : app.users) {
+            JCheckBox userCheckbox = new JCheckBox(user.toString());
+            userCheckbox.setName(String.valueOf(user.getId()));
+
+            if (user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase()) ||
+                    user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                userListPanel.add(userCheckbox);  // Add user checkbox to list
             }
         }
 
-        studentPanel.revalidate();
-        studentPanel.repaint();
+        userListPanel.revalidate();
+        userListPanel.repaint();
     }
 
-    public void deleteSelectedStudents() {
-        Component[] components = studentPanel.getComponents();
-        ArrayList<Integer> studentsToDelete = new ArrayList<>();
+    // Method to delete selected users from the pop-up window
+    // Method to delete selected users from the pop-up window
+    public void deleteSelectedUsersFromPopup(JPanel userListPanel) {
+        Component[] components = userListPanel.getComponents();
+        ArrayList<Integer> usersToDelete = new ArrayList<>();
+
+        // Loop through all components in the userListPanel
         for (Component component : components) {
+            // Check if the component is a checkbox (user checkbox)
             if (component instanceof JCheckBox) {
                 JCheckBox checkbox = (JCheckBox) component;
+                // If checkbox is selected, add the user ID (stored in the name) to the list of users to delete
                 if (checkbox.isSelected()) {
-                    studentsToDelete.add(Integer.parseInt(checkbox.getName()));
+                    usersToDelete.add(Integer.parseInt(checkbox.getName()));
                 }
             }
         }
 
+        // Iterate through the list of users and remove those whose ID matches the selected ones
         Iterator<User> iterator = app.users.iterator();
         while (iterator.hasNext()) {
-            User student = iterator.next();
-            if (studentsToDelete.contains(student.getId())) {
-                iterator.remove();
+            User user = iterator.next();
+            if (usersToDelete.contains(user.getId())) {
+                iterator.remove(); // Remove the user from the list
             }
         }
     }
