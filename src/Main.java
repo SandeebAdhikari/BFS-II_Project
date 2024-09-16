@@ -1,47 +1,28 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import ToDoListApp.ToDoListGUI;
-import ToDoListApp.ToDoListApp;
-import Notepad.NotePad;
+package Library_Shiv;
 
 public class Main {
 
     public static void main(String[] args) {
-        // Create the main frame
-        JFrame frame = new JFrame("Main GUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
-        frame.setLayout(new GridLayout(2, 1));
+        // Initialize the LibraryManager
+        LibraryManager libraryManager = new LibraryManager();
 
+        // Add some sample books for testing
+        libraryManager.addBook(new Book(1, "The Great Gatsby", "F. Scott Fitzgerald", true));
+        libraryManager.addBook(new Book(2, "1984", "George Orwell", true));
+        libraryManager.addBook(new Book(3, "To Kill a Mockingbird", "Harper Lee", true));
 
-        JButton toDoListButton = new JButton("Open To-Do List");
-        toDoListButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        toDoListButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    ToDoListApp app = new ToDoListApp();
-                    new ToDoListGUI(app);
-                });
-            }
-        });
+        // Create some sample users
+        User user1 = new User(101, "John", "Doe", "123 Main St", "555-1234", "Student");
+        User user2 = new User(102, "Jane", "Smith", "456 Elm St", "555-5678", "Teacher");
 
-        JButton notepadButton = new JButton("Open Notepad");
-        notepadButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        notepadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> new NotePad());
-            }
-        });
+        // Register the users
+        libraryManager.registerUser(user1);
+        libraryManager.registerUser(user2);
 
-        // Add the buttons to the frame
-        frame.add(toDoListButton);
-        frame.add(notepadButton);
+        // Initialize the LibraryManagerGUI and pass the LibraryManager object to it
+        LibraryManagerGUI libraryManagerGUI = new LibraryManagerGUI(libraryManager);
 
-        // Make the frame visible
-        frame.setVisible(true);
+        // Launch the GUI
+        libraryManagerGUI.setVisible(true);  // This will display the GUI
     }
 }
