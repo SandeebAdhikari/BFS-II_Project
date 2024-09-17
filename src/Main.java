@@ -23,6 +23,6 @@ public class Main {
         LibraryManagerGUI libraryManagerGUI = new LibraryManagerGUI(libraryManager);
 
         // Launch the GUI
-        libraryManagerGUI.setVisible(true);  // This will display the GUI
+        libraryManagerGUI.setVisible(true);  // Show the GUI
     }
 }

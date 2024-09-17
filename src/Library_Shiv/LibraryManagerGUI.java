@@ -1,12 +1,11 @@
 package Library_Shiv;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LibraryManagerGUI {
+public class LibraryManagerGUI extends  JFrame{
     private LibraryManager libraryManager;
 
     public LibraryManagerGUI(LibraryManager libraryManager) {
@@ -20,10 +19,13 @@ public class LibraryManagerGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // Panels
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
+        // Main panel with padding
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding for overall layout
 
+        // Top panel with inputs
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2, 10, 10)); // Add spacing between components
         JLabel labelUserId = new JLabel("User ID:");
         JTextField textUserId = new JTextField();
         JLabel labelBookISBN = new JLabel("Book ISBN:");
@@ -34,19 +36,17 @@ public class LibraryManagerGUI {
         JButton borrowButton = new JButton("Borrow Book");
         JButton returnButton = new JButton("Return Book");
 
-        panel.add(labelUserId);
-        panel.add(textUserId);
-        panel.add(labelBookISBN);
-        panel.add(textBookISBN);
-        panel.add(labelUserRole);
-        panel.add(textUserRole);
-        panel.add(borrowButton);
-        panel.add(returnButton);
+        inputPanel.add(labelUserId);
+        inputPanel.add(textUserId);
+        inputPanel.add(labelBookISBN);
+        inputPanel.add(textBookISBN);
+        inputPanel.add(labelUserRole);
+        inputPanel.add(textUserRole);
+        inputPanel.add(borrowButton);
+        inputPanel.add(returnButton);
 
-        // Add Book Section
-        JPanel addBookPanel = new JPanel();
-        addBookPanel.setLayout(new GridLayout(3, 2));
-
+        // Center panel for adding books
+        JPanel addBookPanel = new JPanel(new GridLayout(3, 2, 10, 10));
         JLabel labelBookTitle = new JLabel("Book Title:");
         JTextField textBookTitle = new JTextField();
         JLabel labelBookAuthor = new JLabel("Book Author:");
@@ -59,17 +59,12 @@ public class LibraryManagerGUI {
         addBookPanel.add(textBookAuthor);
         addBookPanel.add(addBookButton);
 
-        // Result Area
-        JTextArea resultArea = new JTextArea();
+        // Result area for showing feedback
+        JTextArea resultArea = new JTextArea(8, 50);
         resultArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultArea);
 
-        // Add panels to the frame
-        frame.add(panel, BorderLayout.NORTH);
-        frame.add(addBookPanel, BorderLayout.CENTER);
-        frame.add(scrollPane, BorderLayout.SOUTH);
-
-        // Action Listeners
+        // Action Listeners for buttons
         borrowButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,10 +100,17 @@ public class LibraryManagerGUI {
             }
         });
 
+        // Adding panels to the main frame
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(addBookPanel, BorderLayout.CENTER);
+        mainPanel.add(scrollPane, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        new LibraryManagerGUI();
+        LibraryManager manager = new LibraryManager(); // Ensure manager is passed correctly
+        new LibraryManagerGUI(manager);  // Pass the LibraryManager instance
     }
 }
