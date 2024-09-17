@@ -1,9 +1,9 @@
 package Library_Shiv;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalTime;
 
 
 public class LibraryManager {
@@ -12,7 +12,7 @@ public class LibraryManager {
     private ArrayList<BorrowRecord> borrowRecords;
     private final int MAX_BORROW_LIMIT_STUDENT = 3;
     private final int MAX_BORROW_LIMIT_TEACHER = 10;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final LocalDateTime dateFormat = new LocalDateTime.now();
 
     public LibraryManager() {
         books = new ArrayList<>();
@@ -20,17 +20,15 @@ public class LibraryManager {
         borrowRecords = new ArrayList<>();
     }
 
-    // Add a new book to the library
     public void addBook(Book book) {
         books.add(book);
     }
 
-    // Remove a book from the library
+
     public void removeBook(int isbn) {
         books.removeIf(book -> book.getId() == isbn);
     }
 
-    // Register a new user
     public void registerUser(User user) {
         users.add(user);
     }
@@ -81,17 +79,17 @@ public class LibraryManager {
         return true;
     }
 
-    // Find a book by its ID
+
     private Book findBookById(int id) {
         return books.stream().filter(book -> book.getId() == id).findFirst().orElse(null);
     }
 
-    // Find a user by their ID
+
     private User findUserById(int id) {
         return users.stream().filter(user -> user.getId() == id).findFirst().orElse(null);
     }
 
-    // Find a borrow record by user ID and book ID
+
     private BorrowRecord findBorrowRecord(int userId, int bookId) {
         return borrowRecords.stream()
                 .filter(record -> record.getUserId() == userId && record.getBookId() == bookId && record.isBorrowed())
@@ -99,17 +97,17 @@ public class LibraryManager {
                 .orElse(null);
     }
 
-    // Get all books in the library
+
     public ArrayList<Book> getAllBooks() {
         return books;
     }
 
-    // Get all users in the library
+
     public ArrayList<User> getAllUsers() {
         return users;
     }
 
-    // Get the current date in a readable format
+
     public String getCurrentDate() {
         return dateFormat.format(new Date());
     }
