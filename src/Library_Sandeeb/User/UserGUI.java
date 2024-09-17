@@ -22,7 +22,6 @@ public class UserGUI {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Dropdown for selecting user role
         JLabel roleLabel = new JLabel("Role:");
         String[] roles = {"Student", "Teacher"};
         JComboBox<String> roleComboBox = new JComboBox<>(roles);
@@ -81,7 +80,7 @@ public class UserGUI {
         frame.add(inputPanel, BorderLayout.NORTH);
         frame.setVisible(true);
 
-        // Add user to file and clear inputs
+
         addButton.addActionListener(e -> {
             String firstName = firstNameInputField.getText();
             String lastName = lastNameInputField.getText();
@@ -98,20 +97,20 @@ public class UserGUI {
             }
         });
 
-        // Button to show user list in a pop-up with search and delete functionality
+
         viewUsersButton.addActionListener(e -> {
             showUserListPopup();
         });
     }
 
-    // Method to create and show the pop-up window for listing, searching, and deleting users
+
     public void showUserListPopup() {
         JDialog userListDialog = new JDialog(frame, "User List", true);
         userListDialog.setSize(500, 400);
 
         JPanel dialogPanel = new JPanel(new BorderLayout());
 
-        // Search bar and search button
+
         JPanel searchPanel = new JPanel(new FlowLayout());
         JTextField searchField = new JTextField(20);
         JButton searchButton = new JButton("Search");
@@ -121,22 +120,22 @@ public class UserGUI {
 
         dialogPanel.add(searchPanel, BorderLayout.NORTH);
 
-        // Panel to list the users
+
         JPanel userListPanel = new JPanel();
         userListPanel.setLayout(new BoxLayout(userListPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(userListPanel);
         dialogPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Refresh the user list
+
         refreshUserList(userListPanel, "");
 
-        // Search button functionality
+
         searchButton.addActionListener(e -> {
             String searchTerm = searchField.getText();
             refreshUserList(userListPanel, searchTerm);
         });
 
-        // Delete selected users button at the bottom of the popup
+
         JButton deleteButton = new JButton("Delete Selected Users");
         deleteButton.addActionListener(e -> {
             deleteSelectedUsersFromPopup(userListPanel);
@@ -149,7 +148,7 @@ public class UserGUI {
         userListDialog.setVisible(true);
     }
 
-    // Method to refresh the user list in the pop-up based on search term
+
     public void refreshUserList(JPanel userListPanel, String searchTerm) {
         userListPanel.removeAll();
         for (User user : app.users) {
@@ -164,12 +163,12 @@ public class UserGUI {
         userListPanel.repaint();
     }
 
-    // Method to delete selected users from the pop-up window
+
     public void deleteSelectedUsersFromPopup(JPanel userListPanel) {
         Component[] components = userListPanel.getComponents();
         ArrayList<Integer> usersToDelete = new ArrayList<>();
 
-        // Identify selected users for deletion
+
         for (Component component : components) {
             if (component instanceof JCheckBox) {
                 JCheckBox checkbox = (JCheckBox) component;
@@ -179,7 +178,7 @@ public class UserGUI {
             }
         }
 
-        // Remove selected users from the app's user list
+
         Iterator<User> iterator = app.users.iterator();
         while (iterator.hasNext()) {
             User user = iterator.next();
@@ -188,7 +187,7 @@ public class UserGUI {
             }
         }
 
-        // Save updated list to the file after deletion
+
         app.saveUsersToFile();
     }
 }
