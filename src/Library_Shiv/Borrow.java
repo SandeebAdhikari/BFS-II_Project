@@ -13,21 +13,21 @@ public class Borrow {
     public Borrow(User user, Book book) {
         this.user = user;
         this.book = book;
-        this.borrowDate = LocalDateTime.now();  // Set the borrow date to the current time
-        this.returnDate = null;  // Initially, the return date is null until the book is returned
+        this.borrowDate = LocalDateTime.now();
+        this.returnDate = null;
     }
 
-    // Getter for borrowDate
+
     public LocalDateTime getBorrowDate() {
         return borrowDate;
     }
 
-    // Getter for returnDate
+
     public LocalDateTime getReturnDate() {
         return returnDate;
     }
 
-    // Setter for returnDate when the book is returned
+
     public void setReturnDate(LocalDateTime returnDate) {
         this.returnDate = returnDate;
     }
@@ -40,7 +40,6 @@ public class Borrow {
         return book;
     }
 
-    // Method to convert the Borrow object to a JSON object
     public JSONObject toJSON() {
         JSONObject borrowObj = new JSONObject();
         borrowObj.put("userId", user.getId());
