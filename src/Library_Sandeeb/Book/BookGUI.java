@@ -5,15 +5,23 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class BookGUI {
+public class BookGUI extends JFrame {
     public BookApp app;
-    public JFrame frame;
 
-    public BookGUI(BookApp app) {
+
+    public BookGUI(BookApp app){
+        if (app == null) {
+            throw new IllegalArgumentException("BookApp instance cannot be null");
+        }
         this.app = app;
-        frame = new JFrame("Book List");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        initializeGUI();
+    }
+
+
+    public void initializeGUI() {
+        setTitle("Book List");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -21,7 +29,7 @@ public class BookGUI {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // ISBN label and field at the top
+
         JLabel bookISBNLabel = new JLabel("ISBN:");
         JTextField bookISBNField = new JTextField(15);
         gbc.gridx = 0;
@@ -74,8 +82,8 @@ public class BookGUI {
         buttonPanel.add(viewBooksButton);
         inputPanel.add(buttonPanel, gbc);
 
-        frame.add(inputPanel, BorderLayout.NORTH);
-        frame.setVisible(true);
+        add(inputPanel, BorderLayout.NORTH);
+        setVisible(true);
 
         addButton.addActionListener(e -> {
             String isbn = bookISBNField.getText();
@@ -85,14 +93,14 @@ public class BookGUI {
             String publishedDate = publishedDateInputField.getText();
 
             if (!(isbn.isEmpty() || bookName.isEmpty() || authorName.isEmpty() || edition.isEmpty() || publishedDate.isEmpty())) {
-                app.addBook(Integer.parseInt(isbn), bookName, authorName, edition, Integer.parseInt(publishedDate));
+                app.addBook(Integer.parseInt(isbn), bookName, authorName, edition, Integer.parseInt(publishedDate), true);
                 bookISBNField.setText("");
                 bookNameInputField.setText("");
                 authorNameInputField.setText("");
                 editionInputField.setText("");
                 publishedDateInputField.setText("");
 
-                app.saveBooksToFile();
+                app.saveBooksToFile("books.json");
             }
         });
 
@@ -102,7 +110,7 @@ public class BookGUI {
     }
 
     public void showBookListPopup() {
-        JDialog bookListDialog = new JDialog(frame, "Book List", true);
+        JDialog bookListDialog = new JDialog(this, "Book List", true);
         bookListDialog.setSize(500, 400);
 
         JPanel dialogPanel = new JPanel(new BorderLayout());
@@ -133,7 +141,7 @@ public class BookGUI {
 
         deleteButton.addActionListener(e -> {
             deleteSelectedBooksFromPopup(bookListPanel);
-            app.saveBooksToFile();
+            app.saveBooksToFile("books.json");
             updateBookListInPopup(bookListPanel, "");
         });
 
@@ -143,7 +151,7 @@ public class BookGUI {
 
 
     public void updateBookListInPopup(JPanel bookListPanel, String searchTerm) {
-        bookListPanel.removeAll();  // Clear previous list
+        bookListPanel.removeAll();
 
         for (Book book : app.books) {
             JCheckBox bookCheckbox = new JCheckBox(book.toString());

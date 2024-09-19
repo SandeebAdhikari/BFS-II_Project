@@ -1,4 +1,7 @@
-package Library_Shiv;
+package Library_Sandeeb.Borrow;
+
+import Library_Sandeeb.Book.Book;
+import Library_Sandeeb.User.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,15 +11,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class BorrowGUI extends JFrame {
+    private User loggedInUser;
     private BorrowApp borrowApp;
+    //private BookApp bookApp;
 
-    public BorrowGUI(BorrowApp borrowApp) {
+    public JTextField bookIdField;
+    private JTextArea textArea;
+
+    public BorrowGUI(BorrowApp borrowApp,User loggedInUser) {
         this.borrowApp = borrowApp;
+        this.loggedInUser = loggedInUser;
         initializeGUI();
     }
 
     private void initializeGUI() {
-        setTitle("Library Borrowing System");
+        setTitle("Borrow a Book");
         setSize(600, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -32,57 +41,76 @@ public class BorrowGUI extends JFrame {
         outputPanel.setLayout(new BoxLayout(outputPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(outputPanel);
 
+        bookIdField = new JTextField(5);
+
+        textArea = new JTextArea(5, 20);
+        textArea.setEditable(false);
+
         JButton borrowButton = new JButton("Borrow Selected Book");
 
         searchButton.addActionListener((ActionEvent e) -> {
             String searchQuery = searchField.getText().trim();
-            outputPanel.removeAll();  // Clear previous results
+            outputPanel.removeAll();
 
             if (!searchQuery.isEmpty()) {
                 List<Book> matchingBooks = borrowApp.searchBooks(searchQuery);
-                for (Book book : matchingBooks) {
-                    JCheckBox bookCheckbox = new JCheckBox(book.getBookName() + " (ISBN: " + book.getISBN() + ")");
-                    bookCheckbox.setName(String.valueOf(book.getId()));
-                    outputPanel.add(bookCheckbox);
+                if (matchingBooks.isEmpty()) {
+                    outputPanel.add(new JLabel("No matching books found."));
+                } else {
+                    for (Book book : matchingBooks) {
+                        JCheckBox bookCheckbox = new JCheckBox(book.getBookName() + " (ISBN: " + book.getISBN() + ")");
+                        bookCheckbox.setName(String.valueOf(book.getId()));
+                        outputPanel.add(bookCheckbox);
+                    }
                 }
             } else {
-                outputPanel.add(new JLabel("No search query entered."));
+                outputPanel.add(new JLabel("Please enter a search term."));
             }
 
             outputPanel.revalidate();
             outputPanel.repaint();
         });
 
+
         borrowButton.addActionListener(e -> {
-            for (Component comp : outputPanel.getComponents()) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox checkbox = (JCheckBox) comp;
-                    if (checkbox.isSelected()) {
-                        int bookId = Integer.parseInt(checkbox.getName());
+            for (Component component : outputPanel.getComponents()) {
+                if (component instanceof JCheckBox) {
+                    JCheckBox bookCheckbox = (JCheckBox) component;
+                    if (bookCheckbox.isSelected()) {
+                        int bookId = Integer.parseInt(bookCheckbox.getName());
                         Book book = borrowApp.fetchBookById(bookId);
+
                         if (book != null && book.isAvailable()) {
+                            Borrow borrow = new Borrow(loggedInUser, book);
+                            borrowApp.addBorrow(borrow);
+                            book.setAvailable(false);
+
+                            borrowApp.saveBorrowsToFile("borrows.json");
                             showBorrowPopup(book);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Book is not available for borrowing.");
                         }
                     }
                 }
             }
         });
 
+
         add(searchPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(borrowButton, BorderLayout.SOUTH);
-
         setVisible(true);
     }
 
-    private void showBorrowPopup(Book book) {
+
+        public void showBorrowPopup(Book book) {
         JDialog borrowDialog = new JDialog(this, "Borrow Book", true);
         borrowDialog.setSize(400, 300);
         borrowDialog.setLayout(new BorderLayout());
 
-
         LocalDateTime borrowDate = LocalDateTime.now();
         LocalDateTime returnDate = borrowDate.plusMonths(4);
+
         JPanel datePanel = new JPanel(new GridLayout(3, 1));
         datePanel.add(new JLabel("Borrow Date: " + borrowDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         datePanel.add(new JLabel("Return Date: " + returnDate.format(DateTimeFormatter.ISO_LOCAL_DATE)));
@@ -92,13 +120,7 @@ public class BorrowGUI extends JFrame {
         datePanel.add(new JLabel("SUN: CLOSED"));
 
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> {
-            User user = borrowApp.fetchUserById(1);  // Dummy user for demo purposes, replace with actual user ID logic
-            Borrow borrow = new Borrow(user, book);
-            borrowApp.addBorrow(borrow);
-            borrowApp.saveBorrowsToFile("borrow.json");
-            borrowDialog.dispose();
-        });
+        okButton.addActionListener(e -> borrowDialog.dispose());
 
         borrowDialog.add(datePanel, BorderLayout.CENTER);
         borrowDialog.add(okButton, BorderLayout.SOUTH);
@@ -106,8 +128,11 @@ public class BorrowGUI extends JFrame {
         borrowDialog.setVisible(true);
     }
 
+
     public static void main(String[] args) {
         BorrowApp app = new BorrowApp();
-        new BorrowGUI(app);
+        User loggedInUser = null;
+        new BorrowGUI(app, loggedInUser);
     }
 }
+

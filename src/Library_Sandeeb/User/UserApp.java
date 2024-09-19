@@ -64,6 +64,24 @@ public class UserApp {
         }
     }
 
+    public boolean validateLogin(String firstName, String phoneNumber) {
+        for (User user : users) {
+            if (user.getFirstName().equalsIgnoreCase(firstName) && user.getPhoneNumber().equals(phoneNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public User fetchUserByCredentials(String firstName, String phoneNumber) {
+        for (User user : users) {
+            if (user.getFirstName().equalsIgnoreCase(firstName) && user.getPhoneNumber().equals(phoneNumber)) {
+                return user;  // Return the matching user
+            }
+        }
+        return null;  // Return null if no match found
+    }
+
 
     public static void main(String[] args) {
         UserApp app = new UserApp();

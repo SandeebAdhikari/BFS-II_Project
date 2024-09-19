@@ -22,10 +22,10 @@ public class BookApp {
     }
 
 
-    public void addBook(int isbn, String bookName, String authorName, String edition, int publishedDate) {
-        Book newBook = new Book(isbn, bookIDCounter++, bookName, authorName, edition, publishedDate);
+    public void addBook(int isbn, String bookName, String authorName, String edition, int publishedDate, boolean available) {
+        Book newBook = new Book(isbn, bookIDCounter++, bookName, authorName, edition, publishedDate,available);
         books.add(newBook);
-        saveBooksToFile();
+        saveBooksToFile(FILE_PATH);
     }
 
     public void loadBookInfoFromFile() {
@@ -53,8 +53,10 @@ public class BookApp {
 
                 Long publishedDateLong = (Long) bookObj.get("publishedDate");
                 int publishedDate = (publishedDateLong != null) ? publishedDateLong.intValue() : 0;
+                Boolean available = (Boolean) bookObj.get("available");
+                if (available == null) available = false;
 
-                Book book = new Book(isbn, id, bookName, authorName, edition, publishedDate);
+                Book book = new Book(isbn, id, bookName, authorName, edition, publishedDate,available);
                 books.add(book);
             }
             System.out.println("Books loaded from file.");
@@ -66,7 +68,7 @@ public class BookApp {
     }
 
 
-    public void saveBooksToFile() {
+    public void saveBooksToFile(String fileName) {
         JSONArray bookList = new JSONArray();
         for (Book book : books) {
             JSONObject bookObj = book.toJSON();
